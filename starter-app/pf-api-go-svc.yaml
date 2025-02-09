@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pf-api
+  namespace: default
+spec:
+  selector:
+    app: pf-api
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: http

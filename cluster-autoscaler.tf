@@ -1,5 +1,5 @@
 resource "aws_iam_role" "cluster_autoscaler" {
-  name = "${aws_eks_cluster.eks.name}-cluster-autoscaler"
+  name = "${aws_eks_cluster.eks.name}-autoscaler"
   assume_role_policy = jsonencode(
     {
       Version = "2012-10-17"
@@ -20,7 +20,7 @@ resource "aws_iam_role" "cluster_autoscaler" {
 }
 
 resource "aws_iam_policy" "cluster_autoscaler" {
-  name = "${aws_eks_cluster.eks.name}-cluster-autoscaler"
+  name = "${aws_eks_cluster.eks.name}-autoscaler"
   policy = jsonencode(
     {
       Version = "2012-10-17"

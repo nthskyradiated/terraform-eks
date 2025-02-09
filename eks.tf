@@ -1,5 +1,5 @@
 resource "aws_iam_role" "pumpfactory-eks" {
-  name               = "pumpfactory-eks-${local.eks_name}-${local.env}"
+  name               = "${local.eks_name}"
   assume_role_policy = <<EOF
     {
     "Version": "2012-10-17",
@@ -22,7 +22,7 @@ resource "aws_iam_role_policy_attachment" "eks" {
 }
 
 resource "aws_eks_cluster" "eks" {
-  name     = "pumpfactory-eks-${local.eks_name}-${local.env}"
+  name     = "pumpfactory-eks-${local.eks_name}"
   version  = local.eks_version
   role_arn = aws_iam_role.pumpfactory-eks.arn
   vpc_config {

@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: pf-api
-          image: nthskyradiated/pf-api-go:v1
+          image: public.ecr.aws/b1u3c6e4/nthskyradiated/pf-api-go:latest
           imagePullPolicy: Always
           ports:
             - name: http
@@ -37,7 +37,7 @@ spec:
               value: "3000"
             - name: ENV
               value: "dev"
-          resources:  # Correct placement of resource requests and limits
+          resources:
             requests:
               cpu: 100m
               memory: 128Mi

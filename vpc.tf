@@ -3,7 +3,7 @@ resource "aws_vpc" "pumpfactory-vpc-main" {
   enable_dns_support   = true
   enable_dns_hostnames = true
   tags = {
-    Name = "pumpfactory-vpc-${local.env}-main"
+    Name = "vpc-${local.eks_name}"
   }
 
 }

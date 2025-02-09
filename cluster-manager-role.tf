@@ -3,7 +3,7 @@
 data "aws_caller_identity" "current" {}
 
 resource "aws_iam_role" "eks_admin" {
-  name               = "${local.env}-${local.eks_name}-eks-admin"
+  name               = "${local.eks_name}-eksadmin"
   assume_role_policy = <<EOF
  {
     "Version": "2012-10-17",
@@ -28,7 +28,7 @@ resource "aws_iam_policy" "eks_admin_policy" {
         "Statement": [
             {
                 "Effect": "Allow",
-                "Action": "eks:*",
+                "Action": ["eks:*"],
                 "Resource": "*"
             },
             {

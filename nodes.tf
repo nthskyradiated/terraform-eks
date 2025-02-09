@@ -1,5 +1,5 @@
 resource "aws_iam_role" "pumpfactory-nodes" {
-  name               = "pumpfactory-nodes-${local.eks_name}-${local.env}"
+  name               = "${local.eks_name}-nodes"
   assume_role_policy = <<EOF
   {
   "Version": "2012-10-17",
@@ -42,7 +42,7 @@ resource "aws_eks_node_group" "general" {
     aws_subnet.pumpfactory-subnet-private-2.id,
   ]
   capacity_type  = "SPOT"
-  instance_types = ["t2.micro"]
+  instance_types = ["t2.medium"]
   scaling_config {
     desired_size = 1
     max_size     = 3

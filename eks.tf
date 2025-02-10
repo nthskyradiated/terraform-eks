@@ -1,5 +1,5 @@
 resource "aws_iam_role" "pumpfactory-eks" {
-  name               = "${local.eks_name}"
+  name               = local.eks_name
   assume_role_policy = <<EOF
     {
     "Version": "2012-10-17",

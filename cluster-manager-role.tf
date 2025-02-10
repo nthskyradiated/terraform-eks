@@ -46,7 +46,7 @@ resource "aws_iam_policy" "eks_admin_policy" {
     EOF
 }
 
-resource "aws_iam_role_policy_attachment" "eks_admin_policy" {
+resource "aws_iam_role_policy_attachment" "eks_admin_policy_attachment" {
   role       = aws_iam_role.eks_admin.name
   policy_arn = aws_iam_policy.eks_admin_policy.arn
 }
@@ -64,7 +64,9 @@ resource "aws_iam_policy" "eks_assume_admin" {
         "Statement": [
             {
                 "Effect": "Allow",
-                "Action": "sts:AssumeRole",
+                "Action": [
+                "sts:AssumeRole"
+                ],
                 "Resource": "${aws_iam_role.eks_admin.arn}"
             }
         ]
@@ -72,14 +74,14 @@ resource "aws_iam_policy" "eks_assume_admin" {
     EOF
 }
 
-resource "aws_iam_user_policy_attachment" "eks_assume_admin" {
+resource "aws_iam_user_policy_attachment" "eks_assume_admin_policy_attachment" {
   user       = aws_iam_user.eksadmin.name
   policy_arn = aws_iam_policy.eks_assume_admin.arn
 }
 
 resource "aws_eks_access_entry" "eks_admin" {
   cluster_name      = aws_eks_cluster.eks.name
-  principal_arn     = aws_iam_user.eksadmin.arn
+  principal_arn     = aws_iam_role.eks_admin.arn
   kubernetes_groups = ["my-admin"]
 
 }

@@ -22,21 +22,21 @@ resource "aws_route_table" "pumpfactory-public-rt" {
 }
 
 resource "aws_route_table_association" "pumpfactory-private-rt-assoc-1" {
-  subnet_id      = aws_subnet.pumpfactory-subnet-private-1.id
+  subnet_id      = aws_subnet.private_zone1.id
   route_table_id = aws_route_table.pumpfactory-private-rt.id
 }
 
 resource "aws_route_table_association" "pumpfactory-private-rt-assoc-2" {
-  subnet_id      = aws_subnet.pumpfactory-subnet-private-2.id
+  subnet_id      = aws_subnet.private_zone2.id
   route_table_id = aws_route_table.pumpfactory-private-rt.id
 }
 
 resource "aws_route_table_association" "pumpfactory-public-rt-assoc-1" {
-  subnet_id      = aws_subnet.pumpfactory-subnet-public-1.id
+  subnet_id      = aws_subnet.public_zone1.id
   route_table_id = aws_route_table.pumpfactory-public-rt.id
 }
 
 resource "aws_route_table_association" "pumpfactory-public-rt-assoc-2" {
-  subnet_id      = aws_subnet.pumpfactory-subnet-public-2.id
+  subnet_id      = aws_subnet.public_zone2.id
   route_table_id = aws_route_table.pumpfactory-public-rt.id
 }

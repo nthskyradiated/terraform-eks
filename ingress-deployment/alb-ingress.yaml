@@ -7,13 +7,16 @@ metadata:
   name: pf-api
   namespace: default
   annotations:
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:982534378276:certificate/c59e8f04-34ad-4b56-b2af-2df7451b1cff
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/healthcheck-path: /health
+    alb.ingress.kubernetes.io/healthcheck-path: /healthz
 spec:
   ingressClassName: alb
   rules:
-    - host: api-go.thepumpfactory.net
+    - host: eks.thepumpfactory.net
       http:
         paths:
           - path: /

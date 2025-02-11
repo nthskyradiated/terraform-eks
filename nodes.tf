@@ -38,8 +38,8 @@ resource "aws_eks_node_group" "general" {
   node_role_arn   = aws_iam_role.pumpfactory-nodes.arn
 
   subnet_ids = [
-    aws_subnet.pumpfactory-subnet-private-1.id,
-    aws_subnet.pumpfactory-subnet-private-2.id,
+    aws_subnet.private_zone1.id,
+    aws_subnet.private_zone2.id,
   ]
   capacity_type  = "SPOT"
   instance_types = ["t2.medium"]

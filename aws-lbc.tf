@@ -1,10 +1,12 @@
 data "aws_iam_policy_document" "aws_lbc" {
   statement {
     effect = "Allow"
+
     principals {
       type        = "Service"
       identifiers = ["pods.eks.amazonaws.com"]
     }
+
     actions = [
       "sts:AssumeRole",
       "sts:TagSession"
@@ -35,7 +37,8 @@ resource "aws_eks_pod_identity_association" "aws_lbc" {
 }
 
 resource "helm_release" "aws_lbc" {
-  name       = "aws-load-balancer-controller"
+  name = "aws-load-balancer-controller"
+
   repository = "https://aws.github.io/eks-charts"
   chart      = "aws-load-balancer-controller"
   namespace  = "kube-system"
@@ -50,7 +53,6 @@ resource "helm_release" "aws_lbc" {
     name  = "serviceAccount.name"
     value = "aws-load-balancer-controller"
   }
-
   set {
     name  = "vpcId"
     value = aws_vpc.pumpfactory-vpc-main.id

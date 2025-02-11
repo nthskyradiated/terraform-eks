@@ -22,13 +22,13 @@ resource "aws_iam_role_policy_attachment" "eks" {
 }
 
 resource "aws_eks_cluster" "eks" {
-  name     = "pumpfactory-eks-${local.eks_name}"
+  name     = "${local.eks_name}"
   version  = local.eks_version
   role_arn = aws_iam_role.pumpfactory-eks.arn
   vpc_config {
     subnet_ids = [
-      aws_subnet.pumpfactory-subnet-private-1.id,
-      aws_subnet.pumpfactory-subnet-private-2.id,
+      aws_subnet.private_zone1.id,
+      aws_subnet.private_zone2.id,
     ]
     endpoint_private_access = false
     endpoint_public_access  = true

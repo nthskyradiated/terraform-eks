@@ -7,7 +7,7 @@ resource "aws_eip" "pumpfactory-eip" {
 
 resource "aws_nat_gateway" "pumpfactory-nat-gw" {
   allocation_id = aws_eip.pumpfactory-eip.id
-  subnet_id     = aws_subnet.pumpfactory-subnet-public-1.id
+  subnet_id     = aws_subnet.public_zone1.id
   tags = {
     Name = "pumpfactory-nat-gw-${local.env}"
   }

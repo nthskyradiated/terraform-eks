@@ -25,5 +25,5 @@ kubectl auth can-i "*" "*"
 ```bash
 # Getting pod-identity-agent version as example
 
-aws eks describe-addon-versions --addon-nameeks-pod-identity-agent --kubernetes-version 1.32
+aws eks describe-addon-versions --addon-name eks-pod-identity-agent --kubernetes-version 1.32
 ```

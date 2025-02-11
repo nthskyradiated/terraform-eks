@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pf-api
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pf-api
+      type: primary
+  template:
+    metadata:
+      labels:
+        app: pf-api
+        type: primary
+    spec:
+      containers:
+        - name: pf-api
+          image: public.ecr.aws/b1u3c6e4/nthskyradiated/pf-api-go:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 3000
+          startupProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 5
+          env:
+            - name: MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: pf-api-go-mongo-secret
+                  key: mdb-uri
+            - name: PORT
+              value: "3000"
+            - name: ENV
+              value: "dev"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi

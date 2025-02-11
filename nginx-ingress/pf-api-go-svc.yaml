@@ -1,0 +1,16 @@
+# * Make sure to use annotations for eks NLB
+# ? for supported annotations: https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.7/guide/service/annotations/
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pf-api
+  namespace: default
+spec:
+  selector:
+    app: pf-api
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: http

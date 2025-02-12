@@ -7,21 +7,17 @@ resource "aws_iam_user" "developer" {
 resource "aws_iam_policy" "developer_policy_eks" {
   name        = "developer_policy_eks"
   description = "Developer policy for EKS"
-  policy      = <<EOF
-    {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-        "Effect": "Allow",
-        "Action": [
-            "eks:DescribeCluster",
-            "eks:ListClusters"
-        ],
-        "Resource": "*"
-        }
-    ] 
-}
-    EOF
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Action = [
+        "eks:DescribeCluster",
+        "eks:ListClusters"
+      ]
+      Resource = "*"
+    }]
+  })
 }
 
 resource "aws_iam_user_policy_attachment" "developer_policy_eks" {

@@ -1,19 +1,15 @@
 resource "aws_iam_role" "pumpfactory-eks" {
-  name               = local.eks_name
-  assume_role_policy = <<EOF
-    {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-        "Effect": "Allow",
-        "Principal": {
-            "Service": "eks.amazonaws.com"
-        },
-        "Action": "sts:AssumeRole"
-        }
-    ]
-    }
-    EOF
+  name = var.eks_name
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Principal = {
+        Service = "eks.amazonaws.com"
+      }
+      Action = "sts:AssumeRole"
+    }]
+  })
 }
 
 resource "aws_iam_role_policy_attachment" "eks" {
@@ -22,8 +18,8 @@ resource "aws_iam_role_policy_attachment" "eks" {
 }
 
 resource "aws_eks_cluster" "eks" {
-  name     = "${local.eks_name}"
-  version  = local.eks_version
+  name     = var.eks_name
+  version  = var.eks_version
   role_arn = aws_iam_role.pumpfactory-eks.arn
   vpc_config {
     subnet_ids = [

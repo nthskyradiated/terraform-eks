@@ -19,28 +19,26 @@ resource "aws_iam_role" "eks_admin" {
 
 resource "aws_iam_policy" "eks_admin_policy" {
   name   = "${var.eks_cluster_name}-admin-policy"
-  policy = <<EOF
-    {
-        "Version": "2012-10-17",
-        "Statement": [
-            {
-                "Effect": "Allow",
-                "Action": ["eks:*"],
-                "Resource": "*"
-            },
-            {
-                "Effect": "Allow",
-                "Action": "iam:PassRole",
-                "Resource": "*",
-                "Condition": {
-                    "StringEquals": {
-                        "iam:PassedToService": "eks.amazonaws.com"
-                    }
-                }
-            }
-        ]
-    }
-    EOF
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = ["eks:*"],
+        Resource = "*"
+      },
+      {
+        Effect = "Allow",
+        Action = "iam:PassRole",
+        Resource = "*",
+        Condition = {
+          StringEquals = {
+            "iam:PassedToService": "eks.amazonaws.com"
+          }
+        }
+      }
+    ]
+  })
 }
 
 resource "aws_iam_role_policy_attachment" "eks_admin_policy_attachment" {
@@ -50,25 +48,20 @@ resource "aws_iam_role_policy_attachment" "eks_admin_policy_attachment" {
 
 resource "aws_iam_user" "eksadmin" {
   name = "eksadmin"
-
 }
 
 resource "aws_iam_policy" "eks_assume_admin" {
   name   = "eks_assume_admin"
-  policy = <<EOF
-    {
-        "Version": "2012-10-17",
-        "Statement": [
-            {
-                "Effect": "Allow",
-                "Action": [
-                "sts:AssumeRole"
-                ],
-                "Resource": "${aws_iam_role.eks_admin.arn}"
-            }
-        ]
-    }
-    EOF
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = ["sts:AssumeRole"],
+        Resource = "${aws_iam_role.eks_admin.arn}"
+      }
+    ]
+  })
 }
 
 resource "aws_iam_user_policy_attachment" "eks_assume_admin_policy_attachment" {
@@ -80,13 +73,7 @@ resource "aws_eks_access_entry" "eks_admin" {
   cluster_name      = aws_eks_cluster.eks.name
   principal_arn     = aws_iam_role.eks_admin.arn
   kubernetes_groups = ["my-admin"]
-
 }
-
-
-# ...existing code for admin policies and user...
-
-# * Make sure to remove the access keys from the eks users before destroying the resources.
 
 resource "aws_iam_user" "developer" {
   name = "developer"
@@ -95,21 +82,16 @@ resource "aws_iam_user" "developer" {
 resource "aws_iam_policy" "developer_policy_eks" {
   name        = "developer_policy_eks"
   description = "Developer policy for EKS"
-  policy      = <<EOF
-    {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-        "Effect": "Allow",
-        "Action": [
-            "eks:DescribeCluster",
-            "eks:ListClusters"
-        ],
-        "Resource": "*"
-        }
-    ] 
-}
-    EOF
+  policy      = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = ["eks:DescribeCluster", "eks:ListClusters"],
+        Resource = "*"
+      }
+    ]
+  })
 }
 
 resource "aws_iam_user_policy_attachment" "developer_policy_eks" {

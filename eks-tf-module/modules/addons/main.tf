@@ -1,13 +1,13 @@
 # Pod Identity Addon
 resource "aws_eks_addon" "pod_identity" {
-  cluster_name  = var.eks_cluster_name
+  cluster_name  = var.shared.eks_cluster_name
   addon_name    = "eks-pod-identity-agent"
   addon_version = "v1.3.4-eksbuild.1"
 }
 
 # Cluster Autoscaler
 resource "aws_iam_role" "cluster_autoscaler" {
-  name = "${var.eks_cluster_name}-autoscaler"
+  name = "${var.shared.eks_cluster_name}-autoscaler"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
@@ -106,7 +106,7 @@ resource "helm_release" "cluster_autoscaler" {
   }
   set {
     name  = "awsRegion"
-    value = var.region
+    value = var.shared.region
   }
 
   depends_on = [helm_release.metrics_server]
@@ -146,19 +146,19 @@ data "aws_iam_policy_document" "myapp_secrets" {
 
     condition {
       test     = "StringEquals"
-      variable = "${trimprefix(var.oidc_provider_url, "https://")}:sub"
+      variable = "${trimprefix(var.shared.oidc_provider_url, "https://")}:sub"
       values   = ["system:serviceaccount:default:myapp"]
     }
 
     principals {
-      identifiers = [var.oidc_provider_arn]
+      identifiers = [var.shared.oidc_provider_arn]
       type        = "Federated"
     }
   }
 }
 
 resource "aws_iam_role" "myapp_secrets" {
-  name               = "${var.eks_cluster_name}-myapp-secrets"
+  name               = "${var.shared.eks_cluster_name}-myapp-secrets"
   assume_role_policy = data.aws_iam_policy_document.myapp_secrets.json
 }
 

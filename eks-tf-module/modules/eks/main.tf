@@ -29,8 +29,15 @@ resource "aws_eks_cluster" "eks" {
     endpoint_public_access  = true
   }
 
+  access_config {
+    authentication_mode                         = "API"
+    bootstrap_cluster_creator_admin_permissions = true
+  }
+
   depends_on = [aws_iam_role_policy_attachment.eks_cluster_policy]
 }
+
+
 
 resource "aws_eks_node_group" "general" {
   cluster_name    = aws_eks_cluster.eks.name
@@ -45,12 +52,22 @@ resource "aws_eks_node_group" "general" {
   }
 
   instance_types = var.instance_types
-
+  capacity_type  = "SPOT"
+ update_config {
+    max_unavailable = 1
+  }
+  labels = {
+    role = "general"
+  }
   depends_on = [
     aws_iam_role_policy_attachment.node_group_policy,
     aws_iam_role_policy_attachment.cni_policy,
     aws_iam_role_policy_attachment.container_registry,
   ]
+
+  lifecycle {
+    ignore_changes = [scaling_config[0].desired_size]
+  }
 
   tags = {
     Environment = var.env
@@ -95,16 +112,4 @@ resource "aws_iam_openid_connect_provider" "eks" {
   client_id_list  = ["sts.amazonaws.com"]
   thumbprint_list = [data.tls_certificate.eks.certificates[0].sha1_fingerprint]
   url             = aws_eks_cluster.eks.identity[0].oidc[0].issuer
-}
-
-output "cluster_name" {
-  value = aws_eks_cluster.eks.name
-}
-
-output "oidc_provider_arn" {
-  value = aws_iam_openid_connect_provider.eks.arn
-}
-
-output "oidc_provider_url" {
-  value = aws_iam_openid_connect_provider.eks.url
 }

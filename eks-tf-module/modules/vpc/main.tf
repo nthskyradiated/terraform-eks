@@ -140,15 +140,3 @@ resource "aws_route_table_association" "public_zone2" {
   subnet_id      = aws_subnet.public_zone2.id
   route_table_id = aws_route_table.public.id
 }
-
-output "vpc_id" {
-  value = aws_vpc.main.id
-}
-
-output "private_subnet_ids" {
-  value = [aws_subnet.private_zone1.id, aws_subnet.private_zone2.id]
-}
-
-output "public_subnet_ids" {
-  value = [aws_subnet.public_zone1.id, aws_subnet.public_zone2.id]
-}

@@ -1,29 +1,16 @@
-variable "eks_cluster_name" {
-  type        = string
-  description = "Name of the EKS cluster"
-}
-
-variable "vpc_id" {
-  type        = string
-  description = "VPC ID where EKS cluster is deployed"
-}
-
-variable "private_subnet_ids" {
-  type        = list(string)
-  description = "List of private subnet IDs"
+variable "shared" {
+  type = object({
+    eks_cluster_name  = string
+    oidc_provider_arn = string
+    oidc_provider_url = string
+    vpc_id           = string
+    subnet_ids       = list(string)
+    region           = string
+  })
+  description = "Shared variables from the shared module"
 }
 
 variable "cluster_security_group_id" {
   type        = string
-  description = "Security group ID of the EKS cluster"
-}
-
-variable "oidc_provider_arn" {
-  type        = string
-  description = "ARN of the OIDC Provider"
-}
-
-variable "oidc_provider_url" {
-  type        = string
-  description = "URL of the OIDC Provider"
+  description = "Security group ID specific to EFS module"
 }

@@ -15,7 +15,7 @@ data "aws_iam_policy_document" "ebs_csi_driver" {
 }
 
 resource "aws_iam_role" "ebs_csi" {
-  name               = "${var.eks_cluster_name}-ebs-csi-driver"
+  name               = "ebs-csi-${var.shared.eks_cluster_name}"
   assume_role_policy = data.aws_iam_policy_document.ebs_csi_driver.json
 }
 
@@ -26,7 +26,7 @@ resource "aws_iam_role_policy_attachment" "ebs_policy" {
 
 # Optional: EBS encryption policy
 resource "aws_iam_policy" "ebs_encryption" {
-  name = "${var.eks_cluster_name}-ebs-csi-driver-encryption"
+  name = "${var.shared.eks_cluster_name}-ebs-csi-driver-encryption"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -50,14 +50,14 @@ resource "aws_iam_role_policy_attachment" "ebs_encryption" {
 }
 
 resource "aws_eks_pod_identity_association" "ebs_csi" {
-  cluster_name    = var.eks_cluster_name
+  cluster_name    = var.shared.eks_cluster_name
   namespace       = "kube-system"
   service_account = "ebs-csi-controller-sa"
   role_arn        = aws_iam_role.ebs_csi.arn
 }
 
 resource "aws_eks_addon" "ebs_csi" {
-  cluster_name             = var.eks_cluster_name
+  cluster_name             = var.shared.eks_cluster_name
   addon_name              = "aws-ebs-csi-driver"
   addon_version           = "v1.38.1-eksbuild.2"
   service_account_role_arn = aws_iam_role.ebs_csi.arn

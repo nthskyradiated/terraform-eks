@@ -3,47 +3,41 @@
 data "aws_caller_identity" "current" {}
 
 resource "aws_iam_role" "eks_admin" {
-  name               = "${local.eks_name}-eksadmin"
-  assume_role_policy = <<EOF
- {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": "sts:AssumeRole",
-            "Principal": {
-                "AWS": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
-            }
-        }
-    ]
- }
- EOF
+  name = "${local.eks_name}-eksadmin"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Action = "sts:AssumeRole"
+      Principal = {
+        AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+      }
+    }]
+  })
 }
 
 resource "aws_iam_policy" "eks_admin_policy" {
-  name   = "${local.eks_name}-admin-policy"
-  policy = <<EOF
-    {
-        "Version": "2012-10-17",
-        "Statement": [
-            {
-                "Effect": "Allow",
-                "Action": ["eks:*"],
-                "Resource": "*"
-            },
-            {
-                "Effect": "Allow",
-                "Action": "iam:PassRole",
-                "Resource": "*",
-                "Condition": {
-                    "StringEquals": {
-                        "iam:PassedToService": "eks.amazonaws.com"
-                    }
-                }
-            }
-        ]
-    }
-    EOF
+  name = "${local.eks_name}-admin-policy"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["eks:*"]
+        Resource = "*"
+      },
+      {
+        Effect   = "Allow"
+        Action   = "iam:PassRole"
+        Resource = "*"
+        Condition = {
+          StringEquals = {
+            "iam:PassedToService" = "eks.amazonaws.com"
+          }
+        }
+      }
+    ]
+  })
 }
 
 resource "aws_iam_role_policy_attachment" "eks_admin_policy_attachment" {
@@ -57,21 +51,15 @@ resource "aws_iam_user" "eksadmin" {
 }
 
 resource "aws_iam_policy" "eks_assume_admin" {
-  name   = "eks_assume_admin"
-  policy = <<EOF
-    {
-        "Version": "2012-10-17",
-        "Statement": [
-            {
-                "Effect": "Allow",
-                "Action": [
-                "sts:AssumeRole"
-                ],
-                "Resource": "${aws_iam_role.eks_admin.arn}"
-            }
-        ]
-    }
-    EOF
+  name = "eks_assume_admin"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Action = ["sts:AssumeRole"]
+      Resource = aws_iam_role.eks_admin.arn
+    }]
+  })
 }
 
 resource "aws_iam_user_policy_attachment" "eks_assume_admin_policy_attachment" {

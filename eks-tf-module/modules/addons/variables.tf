@@ -1,26 +1,14 @@
-variable "eks_cluster_name" {
-  type        = string
-  description = "Name of the EKS cluster"
-}
-
-variable "eks_cluster_version" {
-  type        = string
-  description = "Version of the EKS cluster"
-}
-
-variable "oidc_provider_arn" {
-  type        = string
-  description = "ARN of the OIDC Provider"
-}
-
-variable "oidc_provider_url" {
-  type        = string
-  description = "URL of the OIDC Provider"
-}
-
-variable "region" {
-  type        = string
-  description = "AWS region"
+variable "shared" {
+  type = object({
+    eks_cluster_name    = string
+    eks_cluster_version = string
+    oidc_provider_arn   = string
+    oidc_provider_url   = string
+    region             = string
+    vpc_id             = string
+    subnet_ids         = list(string)
+  })
+  description = "Shared variables from the shared module"
 }
 
 variable "helm_timeout" {

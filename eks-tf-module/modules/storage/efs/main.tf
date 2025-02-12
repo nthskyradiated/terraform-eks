@@ -18,18 +18,18 @@ resource "aws_efs_mount_target" "zone_b" {
 }
 
 resource "aws_iam_role" "efs_csi" {
-  name = "efs-csi-${var.eks_cluster_name}"
+  name = "efs-csi-${var.shared.eks_cluster_name}"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
       Effect = "Allow"
       Principal = {
-        Federated = var.oidc_provider_arn
+        Federated = var.shared.oidc_provider_arn
       }
       Action = "sts:AssumeRoleWithWebIdentity"
       Condition = {
         StringEquals = {
-          "${trimprefix(var.oidc_provider_url, "https://")}:sub": "system:serviceaccount:kube-system:efs-csi-controller-sa"
+          "${trimprefix(var.shared.oidc_provider_url, "https://")}:sub": "system:serviceaccount:kube-system:efs-csi-controller-sa"
         }
       }
     }]

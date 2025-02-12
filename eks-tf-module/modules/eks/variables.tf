@@ -26,23 +26,23 @@ variable "eks_version" {
 variable "desired_size" {
   type        = number
   description = "Desired size of node group"
-  default     = 2
+  default     = 1
 }
 
 variable "max_size" {
   type        = number
   description = "Maximum size of node group"
-  default     = 4
+  default     = 3
 }
 
 variable "min_size" {
   type        = number
   description = "Minimum size of node group"
-  default     = 1
+  default     = 0
 }
 
 variable "instance_types" {
   type        = list(string)
   description = "List of instance types for the node group"
-  default     = ["t3.medium"]
+  default     = ["t2.medium"]
 }

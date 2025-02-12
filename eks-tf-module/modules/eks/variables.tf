@@ -46,3 +46,15 @@ variable "instance_types" {
   description = "List of instance types for the node group"
   default     = ["t2.medium"]
 }
+
+variable "cluster_endpoint_private_access" {
+  type        = bool
+  description = "Enable private access to the cluster endpoint"
+  default     = true
+}
+
+variable "cluster_endpoint_public_access" {
+  type        = bool
+  description = "Enable public access to the cluster endpoint"
+  default     = true
+}

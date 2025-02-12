@@ -8,13 +8,15 @@ module "vpc" {
 }
 
 module "eks" {
-  source      = "./modules/eks"
-  env         = var.env
-  vpc_id      = module.vpc.vpc_id
-  subnet_ids  = module.vpc.private_subnet_ids
-  eks_name    = var.eks_name
-  eks_version = var.eks_version
-  depends_on  = [module.vpc]
+  source                    = "./modules/eks"
+  env                       = var.env
+  vpc_id                    = module.vpc.vpc_id
+  subnet_ids                = module.vpc.private_subnet_ids
+  eks_name                  = var.eks_name
+  eks_version               = var.eks_version
+  endpoint_private_access   = var.cluster_endpoint_private_access
+  endpoint_public_access    = var.cluster_endpoint_public_access
+  depends_on                = [module.vpc]
 }
 
 # Shared module doesn't create resources, it just organizes variables

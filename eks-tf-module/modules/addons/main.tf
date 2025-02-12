@@ -24,7 +24,7 @@ resource "aws_iam_role" "cluster_autoscaler" {
 }
 
 resource "aws_iam_policy" "cluster_autoscaler" {
-  name = "${aws_eks_cluster.eks.name}-autoscaler"
+  name = "${var.shared.eks_cluster_name}-autoscaler"
   policy = jsonencode(
     {
       Version = "2012-10-17"
@@ -64,7 +64,7 @@ resource "aws_iam_role_policy_attachment" "cluster_autoscaler" {
 }
 
 resource "aws_eks_pod_identity_association" "cluster_autoscaler" {
-  cluster_name    = aws_eks_cluster.eks.name
+  cluster_name    = var.shared.eks_cluster_name
   namespace       = "kube-system"
   service_account = "cluster-autoscaler"
   role_arn        = aws_iam_role.cluster_autoscaler.arn
@@ -83,9 +83,10 @@ resource "helm_release" "metrics_server" {
     value = "--kubelet-insecure-tls"
   }
 
+  # Remove values file reference until we create it
   values = [file("${path.module}/values/metrics-server.yaml")]
 
-  depends_on = [aws_eks_node_group.general]
+  depends_on = [aws_eks_addon.pod_identity]
 }
 
 resource "helm_release" "cluster_autoscaler" {
@@ -102,7 +103,7 @@ resource "helm_release" "cluster_autoscaler" {
   }
   set {
     name  = "autoDiscovery.clusterName"
-    value = aws_eks_cluster.eks.name
+    value = var.shared.eks_cluster_name  # Changed from aws_eks_cluster.eks.name
   }
   set {
     name  = "awsRegion"
@@ -163,7 +164,7 @@ resource "aws_iam_role" "myapp_secrets" {
 }
 
 resource "aws_iam_policy" "myapp_secrets" {
-  name = "${aws_eks_cluster.eks.name}-myapp-secrets"
+  name = "${var.shared.eks_cluster_name}-myapp-secrets"
 
   policy = jsonencode({
     Version = "2012-10-17"

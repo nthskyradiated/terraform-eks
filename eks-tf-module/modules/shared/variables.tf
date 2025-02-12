@@ -3,6 +3,11 @@ variable "eks_cluster_name" {
   description = "Name of the EKS cluster"
 }
 
+variable "eks_cluster_version" {
+  type        = string
+  description = "Version of the EKS cluster"
+}
+
 variable "oidc_provider_arn" {
   type        = string
   description = "ARN of the OIDC Provider"
@@ -26,15 +31,4 @@ variable "subnet_ids" {
 variable "region" {
   type        = string
   description = "AWS region"
-}
-
-output "all" {
-  value = {
-    eks_cluster_name  = var.eks_cluster_name
-    oidc_provider_arn = var.oidc_provider_arn
-    oidc_provider_url = var.oidc_provider_url
-    vpc_id           = var.vpc_id
-    subnet_ids       = var.subnet_ids
-    region           = var.region
-  }
 }

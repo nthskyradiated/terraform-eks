@@ -70,7 +70,7 @@ resource "aws_iam_user_policy_attachment" "eks_assume_admin_policy_attachment" {
 }
 
 resource "aws_eks_access_entry" "eks_admin" {
-  cluster_name      = aws_eks_cluster.eks.name
+  cluster_name      = var.eks_cluster_name
   principal_arn     = aws_iam_role.eks_admin.arn
   kubernetes_groups = ["my-admin"]
 }
@@ -100,7 +100,7 @@ resource "aws_iam_user_policy_attachment" "developer_policy_eks" {
 }
 
 resource "aws_eks_access_entry" "developer" {
-  cluster_name      = aws_eks_cluster.eks.name
+  cluster_name      = var.eks_cluster_name
   principal_arn     = aws_iam_user.developer.arn
   kubernetes_groups = ["my-viewer"]
 }

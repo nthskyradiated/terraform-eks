@@ -20,14 +20,15 @@ module "eks" {
 # Shared module doesn't create resources, it just organizes variables
 # It needs to get its values from vpc and eks modules
 module "shared" {
-  source            = "./modules/shared"
-  eks_cluster_name  = module.eks.cluster_name
-  oidc_provider_arn = module.eks.oidc_provider_arn
-  oidc_provider_url = module.eks.oidc_provider_url
-  vpc_id           = module.vpc.vpc_id
-  subnet_ids       = module.vpc.private_subnet_ids
-  region           = var.region
-  depends_on       = [module.eks]  # Make explicit that we need EKS data
+  source              = "./modules/shared"
+  eks_cluster_name    = module.eks.cluster_name
+  eks_cluster_version = var.eks_version  # Add this line
+  oidc_provider_arn   = module.eks.oidc_provider_arn
+  oidc_provider_url   = module.eks.oidc_provider_url
+  vpc_id              = module.vpc.vpc_id
+  subnet_ids          = module.vpc.private_subnet_ids
+  region              = var.region
+  depends_on          = [module.eks]  # Make explicit that we need EKS data
 }
 
 # All other modules that use shared variables should depend on both eks and shared

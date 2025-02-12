@@ -8,15 +8,15 @@ module "vpc" {
 }
 
 module "eks" {
-  source                    = "./modules/eks"
-  env                       = var.env
-  vpc_id                    = module.vpc.vpc_id
-  subnet_ids                = module.vpc.private_subnet_ids
-  eks_name                  = var.eks_name
-  eks_version               = var.eks_version
-  endpoint_private_access   = var.cluster_endpoint_private_access
-  endpoint_public_access    = var.cluster_endpoint_public_access
-  depends_on                = [module.vpc]
+  source                          = "./modules/eks"
+  env                             = var.env
+  vpc_id                          = module.vpc.vpc_id
+  subnet_ids                      = module.vpc.private_subnet_ids
+  eks_name                        = var.eks_name
+  eks_version                     = var.eks_version
+  cluster_endpoint_private_access = var.cluster_endpoint_private_access
+  cluster_endpoint_public_access  = var.cluster_endpoint_public_access
+  depends_on                      = [module.vpc]
 }
 
 # Shared module doesn't create resources, it just organizes variables
@@ -24,13 +24,13 @@ module "eks" {
 module "shared" {
   source              = "./modules/shared"
   eks_cluster_name    = module.eks.cluster_name
-  eks_cluster_version = var.eks_version  # Add this line
+  eks_cluster_version = var.eks_version # Add this line
   oidc_provider_arn   = module.eks.oidc_provider_arn
   oidc_provider_url   = module.eks.oidc_provider_url
   vpc_id              = module.vpc.vpc_id
   subnet_ids          = module.vpc.private_subnet_ids
   region              = var.region
-  depends_on          = [module.eks]  # Make explicit that we need EKS data
+  depends_on          = [module.eks] # Make explicit that we need EKS data
 }
 
 # All other modules that use shared variables should depend on both eks and shared
@@ -45,14 +45,14 @@ module "aws_lbc" {
   cluster_name = module.eks.cluster_name
   vpc_id       = module.vpc.vpc_id
   shared       = module.shared.all
-  helm_timeout = 300  # optional, using default value
+  helm_timeout = 300 # optional, using default value
   depends_on   = [module.eks, module.addons, module.shared]
 }
 
 module "ebs" {
-  source            = "./modules/storage/ebs"  
-  shared            = module.shared.all
-  depends_on        = [module.eks, module.addons, module.shared]
+  source     = "./modules/storage/ebs"
+  shared     = module.shared.all
+  depends_on = [module.eks, module.addons, module.shared]
 }
 
 module "efs" {
@@ -68,8 +68,8 @@ module "ingress" {
 }
 
 module "cert_manager" {
-  source           = "./modules/cert-manager"
-  depends_on       = [module.ingress, module.shared]
+  source     = "./modules/cert-manager"
+  depends_on = [module.ingress, module.shared]
 }
 
 module "iam" {
